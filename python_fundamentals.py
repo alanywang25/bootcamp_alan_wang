@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import time
 from pathlib import Path
-from src.utils import get_summary_stats
 
 # 1. NumPy Operations
 def numpy_operations():
@@ -49,7 +49,22 @@ def load_and_inspect_data(filepath="data/starter_data.csv"):
     Path("data/processed").mkdir(parents=True, exist_ok=True)
     
     # Load data
-    df = pd.read_csv(filepath)
+    try:
+        df = pd.read_csv(filepath)
+        
+        # Try to parse dates automatically
+        df = df.apply(lambda col: pd.to_datetime(col, errors='ignore') 
+                      if col.dtype == object else col)
+        
+    except FileNotFoundError:
+        print(f"Error: File not found at {filepath}")
+        # Create empty DataFrame with expected structure for demonstration
+        df = pd.DataFrame({
+            'numeric_col': [1, 2, 3],
+            'category': ['A', 'B', 'A'],
+            'date_col': pd.to_datetime(['2023-01-01', '2023-01-02', '2023-01-03'])
+        })
+        print("Using sample data for demonstration")
     
     # Inspect data
     print("\nData Info:")
@@ -62,22 +77,34 @@ def load_and_inspect_data(filepath="data/starter_data.csv"):
 
 # 3. Summary Statistics
 def calculate_summary_stats(df):
-    """Calculate summary statistics"""
+    """Calculate summary statistics for numeric columns only"""
     print("\n=== Summary Statistics ===")
     
-    # Basic statistics
-    print("\nDescriptive statistics:")
-    desc_stats = df.describe()
-    print(desc_stats)
+    # Basic statistics for numeric columns only
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    print("\nNumeric columns found:", list(numeric_cols))
     
-    # Groupby operations (assuming there's a 'category' column)
+    if len(numeric_cols) > 0:
+        print("\nDescriptive statistics for numeric columns:")
+        desc_stats = df[numeric_cols].describe()
+        print(desc_stats)
+    else:
+        print("\nNo numeric columns found for descriptive statistics")
+        desc_stats = None
+    
+    # Groupby operations for numeric columns (if category column exists)
+    group_stats = None
     if 'category' in df.columns:
         print("\nGroupby statistics:")
-        group_stats = df.groupby('category').agg(['mean', 'median', 'std'])
-        print(group_stats)
+        # Only include numeric columns in groupby
+        group_cols = [c for c in numeric_cols if c != 'category']
+        if group_cols:
+            group_stats = df.groupby('category')[group_cols].agg(['mean', 'median', 'std'])
+            print(group_stats)
+        else:
+            print("No numeric columns available for groupby operations")
     else:
         print("\nNo 'category' column found for groupby operations")
-        group_stats = None
     
     return desc_stats, group_stats
 
@@ -86,50 +113,56 @@ def save_outputs(desc_stats, group_stats):
     """Save outputs to files"""
     print("\n=== Saving Outputs ===")
     
-    # Save descriptive statistics
-    desc_stats.to_csv("data/processed/summary.csv")
-    desc_stats.to_json("data/processed/summary.json")
-    print("Saved summary statistics to CSV and JSON")
+    # Save descriptive statistics if available
+    if desc_stats is not None:
+        desc_stats.to_csv("data/processed/summary.csv")
+        desc_stats.to_json("data/processed/summary.json")
+        print("Saved summary statistics to CSV and JSON")
+        
+        # Bonus: Create and save a basic plot
+        plt.figure(figsize=(8, 4))
+        desc_stats.loc['mean'].plot(kind='bar')
+        plt.title("Mean Values by Numeric Column")
+        plt.ylabel("Mean Value")
+        plt.tight_layout()
+        plt.savefig("data/processed/basic_plot.png")
+        print("Saved basic plot to data/processed/basic_plot.png")
+    else:
+        print("No descriptive statistics to save")
     
     # Save group statistics if available
     if group_stats is not None:
         group_stats.to_csv("data/processed/group_summary.csv")
         group_stats.to_json("data/processed/group_summary.json")
         print("Saved group statistics to CSV and JSON")
-    
-    # Bonus: Create and save a basic plot
-    if 'value' in desc_stats.columns:
-        plt.figure(figsize=(8, 4))
-        plt.bar(desc_stats.columns, desc_stats.loc['mean'])
-        plt.title("Mean Values by Column")
-        plt.ylabel("Mean Value")
-        plt.savefig("data/processed/basic_plot.png")
-        print("Saved basic plot to data/processed/basic_plot.png")
 
 # 5. Reusable Functions
 def get_summary_stats(df, groupby_col=None):
     """
-    Utility function to get summary statistics
+    Utility function to get summary statistics for numeric columns only
     Args:
         df: pandas DataFrame
         groupby_col: column name to group by (optional)
     Returns:
         Dictionary containing summary statistics
     """
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    
     stats = {
-        'description': df.describe(),
+        'description': df[numeric_cols].describe() if len(numeric_cols) > 0 else None,
         'dtypes': df.dtypes,
-        'null_counts': df.isnull().sum()
+        'null_counts': df.isnull().sum(),
+        'numeric_columns': list(numeric_cols)
     }
     
-    if groupby_col and groupby_col in df.columns:
-        stats['group_stats'] = df.groupby(groupby_col).agg(['mean', 'median', 'std'])
+    if groupby_col and groupby_col in df.columns and len(numeric_cols) > 0:
+        group_cols = [c for c in numeric_cols if c != groupby_col]
+        if group_cols:
+            stats['group_stats'] = df.groupby(groupby_col)[group_cols].agg(['mean', 'median', 'std'])
     
     return stats
 
 def main():
-    import time  # Import here to avoid confusion with other time variables
-    
     # Execute all steps
     numpy_operations()
     
@@ -143,7 +176,10 @@ def main():
     print("\n=== Reusable Function Demo ===")
     summary = get_summary_stats(df, 'category' if 'category' in df.columns else None)
     print("\nSummary from reusable function:")
-    print(summary['description'])
+    if summary['description'] is not None:
+        print(summary['description'])
+    else:
+        print("No numeric columns available for description")
 
 if __name__ == "__main__":
     main()
