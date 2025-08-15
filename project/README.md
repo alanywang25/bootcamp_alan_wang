@@ -47,7 +47,7 @@ Goal → Stage → Deliverable
 
 - Acquire & clean data → Stage 2: Data Engineering → Processed dataset 
 
-- Train & evaluate models	→ Stage 3: Modeling (03) → Code for models and evaluation written in Python 
+- Train & evaluate models	→ Stage 3: Modeling → Code for models and evaluation written in Python 
 
 - Backtest strategy	→ Stage 4: Validation → Performance report using aforementioned metrics and validation methods
 
