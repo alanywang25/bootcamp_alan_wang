@@ -7,6 +7,14 @@
 - **class_materials/** → Local storage for class materials. Never pushed to
 GitHub.
 
+## Homework Folder Rules
+- Each homework will be in its own subfolder (`homework0`, `homework1`, etc.)
+- Note: Notebooks for Homeworks 3-6 (Stages 03-06) are stored in the `notebooks` folder
+- Include all required files for grading.
+
+## Project Folder Rules
+- Keep project files organized and clearly named.
+
 ## Data Storage
 
 ### Folder Structure
@@ -72,9 +80,3 @@ df = cleaning.drop_missing(df, threshold=0.5)
 df = cleaning.fill_missing_median(df, numeric_columns)
 df = cleaning.normalize_data(df, columns_to_normalize)
 ```
-
-## Homework Folder Rules
-- Each homework will be in its own subfolder (`homework0`, `homework1`, etc.)
-- Include all required files for grading.
-## Project Folder Rules
-- Keep project files organized and clearly named.
