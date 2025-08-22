@@ -9,7 +9,6 @@ GitHub.
 
 ## Homework Folder Rules
 - Each homework will be in its own subfolder (`homework0`, `homework1`, etc.)
-- Note: Notebooks for Homeworks 3-9 (Stages 03-09) are stored in the `notebooks` folder
 - Include all required files for grading.
 
 ## Project Folder Rules
