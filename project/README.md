@@ -1,4 +1,64 @@
-# Project Title
+# Predicting Stock Returns using SPY ETF Data
+
+**Stage**: Productization (Stage 13)
+
+## Project Overview
+This project provides a machine learning API for predicting SPY ETF returns using technical indicators. The model is a linear regression trained on historical data from 2015-2023.
+
+## Objectives
+- Predict SPY returns based on technical indicators
+- Provide a RESTful API for model inference
+- Enable easy integration with trading systems
+
+## How to Run
+
+### Prerequisites
+- Python 3.8+
+- pip
+
+### Installation
+1. Clone the repository and navigate to the project/ folder
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+3. Training the Model
+Run the Jupyter notebook to train and save the model:
+```bash
+jupyter notebook notebooks/final_analysis.ipynb
+```
+4. Starting the API
+```bash
+python app.py
+```
+The API will be available at http://localhost:5000
+5. Testing the endpoints
+The endpoints can be tested using the last notebook cell in the final_analysis.ipynb file, and the resulting outputs are stored there as well
+
+### Features
+The model uses 5 technical indicators:
+- Volume_MA: 5-day moving average of volume
+- SMA_10: 10-day simple moving average
+- SMA_50: 50-day simple moving average
+- RSI: Relative Strength Index (14-day)
+- MACD: Moving Average Convergence Divergence
+
+### Assumptions and Risks
+- Assumes market conditions similar to training period (2015-2023)
+- Linear regression may not capture complex non-linear relationships
+- Past performance is not indicative of future results
+- Model should be retrained periodically with new data
+
+### Lifecycle Management
+- Monitor model performance monthly
+- Retrain quarterly with new data
+- Update feature engineering as market dynamics change
+
+### Next Steps
+- Add more sophisticated models (XGBoost, LSTM)
+- Implement automated retraining pipeline
+- Add confidence intervals to predictions
+- Develop trading strategy backtesting
 
 **Stage:** Problem Framing & Scoping (Stage 01)
 
