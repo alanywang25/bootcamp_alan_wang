@@ -1,0 +1,11 @@
+## Model Deployment Risk Assessment & Monitoring Plan
+
+**Deployment Risks**: Our linear regression model for SPY returns prediction faces several critical risks if deployed. **Data drift** poses the most immediate threat, as market volatility regimes change frequently, rendering technical indicators less effective. **Concept drift** could occur during market regime shifts (bull to bear markets), fundamentally altering return distributions. **Feature degradation** is likely as correlations between technical indicators and returns evolve over time. **Label latency** presents operational challenges since actual returns are only known after market close, creating feedback delays. Finally, **upstream data pipeline failures** could corrupt feature calculations, particularly for rolling indicators like moving averages.
+
+Monitoring Framework: Across four layers, we would monitor:
+- Data layer: Feature distributions (PSI < 0.1), null rates (<2%), and data freshness (<15 min delay)
+- Model layer: Rolling 2-week AUC (>0.55 required, <0.50 alert), prediction drift (PSI < 0.15), and calibration error (<5%)
+- System layer: P95 latency (<100ms), error rate (<1%), and service availability (>99.9%)
+- Business layer: Strategy Sharpe ratio (>0.5), maximum drawdown (<15%), and trade execution success rate (>98%)
+
+**Ownership & Maintenance**: The quantitative research team owns model performance monitoring and retraining triggers (monthly cadence or >5% PSI drift). ML engineers handle system health and data pipeline integrity. A weekly cross-functional review between quant researchers, data engineers, and risk officers assesses model performance. Handoffs follow a formal change management process where quant researchers approve model versions, ML engineers manage deployment, and risk officers must approve production rollbacks. All incidents are logged in Jira with automated alerts routed to the on-call engineering team, while performance metrics are tracked in Datadog dashboards owned by the quant team. Retraining is triggered automatically when feature PSI exceeds 5% or rolling AUC drops below 0.50 for two consecutive days.
