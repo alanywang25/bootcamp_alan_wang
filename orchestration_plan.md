@@ -72,7 +72,7 @@
 
 ## 5. Automation Strategy
 
-There are several processes that can be automated immediately. For example, the data ingestion and validation process can become a daily automated pipeline, and feature engineering can be automated through deterministic transformations. In addition, predictions can be automatically generated using daily batch scoring, basic monitoring/alerting can be automated checks in instead, and daily reports can also be automatically generated. On the other hand, there are still processes that need to be handled manually. For example, implementing any model retraining or strategy parameter changes requires human validation, and major processes such as production deployment and feature additions require rigorous testing prior to implementing.
+There are several processes that can be automated immediately. For example, the data ingestion and validation process can become a daily automated pipeline, and feature engineering can be automated through deterministic transformations. In addition, predictions can be automatically generated using daily batch scoring, basic monitoring/alerting can be automated checks in instead, and daily reports can also be automatically generated. On the other hand, there are still processes that need to be handled manually. For example, implementing any model retraining or strategy parameter changes requires human validation, and major processes such as production deployment and feature additions require rigorous testing prior to implementing. 
 
 **Rationale for Manual Components:**
 - **Financial risk mitigation:** Model changes require human validation before affecting trading decisions

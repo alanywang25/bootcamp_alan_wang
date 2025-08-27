@@ -25,7 +25,7 @@ GitHub.
 - **Parquet**: Used for processed data as it's compressed and preserves data types
 
 ### Environment Variables
-Paths are configured via `.env.example` file:
+Paths are configured via `.env` file:
 
 ## Data Cleaning Strategy
 
